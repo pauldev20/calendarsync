@@ -37,6 +37,7 @@ class CalendarSync:
 	
 	def __get_aggregation_calendars(self) -> Union[List[BaseCalendar], None]:
 		aggregates = [(self.config[section]["aggregate"], section) for section in self.config.sections() if "aggregate" in self.config[section]]
+		aggregates = [(aggr, aggregate[1]) for aggregate in aggregates for aggr in aggregate[0].split(",")]
 		if len(aggregates) > 0:
 			calendars = [(self.__get_cal_dav(aggregate[1]), aggregate[0]) for aggregate in aggregates]
 			return [cal[0].create_calendar(cal[1]) for cal in calendars if cal[0] != None]
