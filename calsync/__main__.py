@@ -3,10 +3,20 @@ from datetime import timedelta
 import configparser
 import argparse
 import logging
+import signal
 import time
+import sys
 import os
 
+def signal_handler(sig, frame):
+	print("Exiting...")
+	sys.exit(0)
+
 if __name__ == "__main__":
+	# ------------------------------ Signal Handler ------------------------------ #
+	signal.signal(signal.SIGINT, signal_handler)
+	signal.signal(signal.SIGTERM, signal_handler)
+
 	# ------------------------------- Logging Setup ------------------------------ #
 	logging.basicConfig(
 		level=logging.INFO,
