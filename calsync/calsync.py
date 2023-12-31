@@ -1,9 +1,8 @@
 from models.base import BaseCalDav, BaseCalendar
 from datetime import datetime, timedelta
-from typing import Union
+from typing import Union, List
 import configparser
 import logging
-import caldav
 
 # ---------------------------------------------------------------------------- #
 #                                 CalendarSync                                 #
@@ -36,25 +35,22 @@ class CalendarSync:
 			self.logger.error("Error while connecting to CalDAV server")
 		return None
 	
-	def __get_aggregation_calendar(self) -> Union[BaseCalendar, None]:
+	def __get_aggregation_calendars(self) -> Union[List[BaseCalendar], None]:
 		aggregates = [(self.config[section]["aggregate"], section) for section in self.config.sections() if "aggregate" in self.config[section]]
-		if len(aggregates) == 1:
-			cal = self.__get_cal_dav(aggregates[0][1])
-			if cal == None:
-				return None
-			return cal.create_calendar(aggregates[0][0])
-		elif len(aggregates) > 1:
-			self.logger.error("Multiple aggregation calendars found")
+		if len(aggregates) > 0:
+			calendars = [(self.__get_cal_dav(aggregate[1]), aggregate[0]) for aggregate in aggregates]
+			return [cal[0].create_calendar(cal[1]) for cal in calendars if cal[0] != None]
 		else:
-			self.logger.error("Could not find aggregation calendar")
+			self.logger.error("Could not find aggregation calendar(s)")
 		return None
 
 	def sync(self, weeks_back: int, weeks_forward: int) -> None:
-		aggregation = self.__get_aggregation_calendar()
-		if aggregation == None:
+		aggregations = self.__get_aggregation_calendars()
+		if aggregations == None or len(aggregations) == 0:
 			return
-		self.logger.info(f"Clearing Aggregation Calendar")
-		aggregation.clear()
+		self.logger.info(f"Clearing Aggregation Calendar(s)")
+		for agg_calendar in aggregations:
+			agg_calendar.clear()
 		
 		for section in self.config.sections():
 			cldav = self.__get_cal_dav(section)
@@ -70,11 +66,12 @@ class CalendarSync:
 				):
 					if not event.is_busy():
 						continue
-					aggregation.add_event(
-						event.get_start(),
-						event.get_end(),
-						"BUSY",
-						"OPAQUE" if event.is_busy() else "TRANSPARENT"
-					)
+					for agg_calendar in aggregations:
+						agg_calendar.add_event(
+							event.get_start(),
+							event.get_end(),
+							"BUSY",
+							"OPAQUE" if event.is_busy() else "TRANSPARENT"
+						)
 
 			self.logger.info(f"Finished Syncing - \"{section}\"")
