@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  calsync:
+    container_name: calsync
+    build: .
+    environment:
+      - CALENDARSYNC_INTERVAL=15
+      - CALENDARSYNC_WEEKS_BACK=2
+      - CALENDARSYNC_WEEKS_FORWARD=2
+    volumes:
+      - ./config.ini:/app/settings/config.ini
