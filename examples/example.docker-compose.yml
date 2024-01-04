@@ -9,4 +9,4 @@ services:
       - CALENDARSYNC_WEEKS_BACK=2
       - CALENDARSYNC_WEEKS_FORWARD=2
     volumes:
-      - ./config.ini:/app/settings/config.ini
+      - /path/to/settingsfolder:/app/settings
