@@ -48,9 +48,11 @@ Some optional arguments can also be passed as environment variables:
 - `WEEKS_BACK`		= `CALENDARSYNC_WEEKS_BACK`
 - `INTERVAL`		= `CALENDARSYNC_INTERVAL`
 
-> ⚠️ When adding calendars to the *calendars* list that don't exist, you will get a warning, but the sync will proceed.
+> [!NOTE]
+> When adding calendars to the *calendars* list that don't exist, you will get a warning, but the sync will proceed.
 
-> ⚠️ Calendar names in the *calendars* or *aggregate* list can't include ","
+> [!CAUTION]
+> Calendar names in the *calendars* or *aggregate* list can't include ","
 
 ## iCloud
 1. Go to [appleid.apple.com](https://appleid.apple.com/account/home)
@@ -64,7 +66,8 @@ password=xxxx xxxx xxxx xxxx	; The App-Specific Password you just created
 calendars=Work,Private,...		; The Calendars you want to sync
 aggregate=Free/Busy,...			; The Calendars you want to aggregate to
 ```
-> ⚠️ When adding a clalendar to the *aggregate* list, that doesn't exist, it will be created.
+> [!IMPORTANT]
+> When adding a clalendar to the *aggregate* list, that doesn't exist, it will be created.
 
 ## Google
 1. Go to [myaccount.google.com](https://myaccount.google.com)
@@ -79,12 +82,14 @@ password=xxxx-xxxx-xxxx-xxxx	; The App-Password you just created
 calendars=Work,Private,...		; The Calendars you want to sync
 aggregate=Free/Busy,...			; The Calendars you want to aggregate to
 ```
-> ⚠️ When adding a calendar to the *aggregate* list, that doesn't exist, an error occurs and the sync **will fail!**
+> [!IMPORTANT]
+> When adding a calendar to the *aggregate* list, that doesn't exist, an error occurs and the sync **will fail!**
 
 # :whale: Docker
 The easiest way to run the software is as a Docker container. There are 2 ways you can achieve this.
 
-> ⚠️ With these configurations, the config.ini needs to be placed inside the *settingsfolder*
+> [!NOTE]
+> With these configurations, the config.ini needs to be placed inside the *settingsfolder*
 
 ## Command Line
 ```sh
@@ -118,13 +123,12 @@ services:
 - [CalDav Library](https://github.com/python-caldav/caldav/tree/master)
 
 ---
-<table style="width: 100%; border: none;" cellspacing="0" cellpadding="0" border="0">
-	<tr style="border: 0px;">
-		<td style="border: 0px;">
-			If you like this project you can buy me a coffee 😄 Would be greatly appreciated!
-		</td>
-		<td style="border: 0px;">
-			<a href="https://www.buymeacoffee.com/pauldev" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;"/>
-		</td>
-	</tr>
-</table>
+<div>
+	<div align="center">
+		If you like this project you can buy me a coffee 😄 Would be greatly appreciated!
+	</div>
+	<br/>
+	<div align="center">
+		<a href="https://www.buymeacoffee.com/pauldev" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;"/>
+	</div>
+</div>
