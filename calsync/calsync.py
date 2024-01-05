@@ -1,4 +1,4 @@
-from models.base import BaseCalDav, BaseCalendar
+from models.base import BaseCalDav, BaseCalendar, BaseObjectResource
 from datetime import datetime, timedelta
 from typing import Union, List
 import configparser
@@ -68,17 +68,16 @@ class CalendarSync:
 		aggregations = self.__get_aggregation_calendars()
 		if aggregations == None or len(aggregations) == 0:
 			return
-		self.logger.info(f"Clearing Aggregation Calendar(s)")
-		for agg_calendar in aggregations:
-			agg_calendar.clear()
 		
+		new_agg_events: List[BaseObjectResource] = []
 		for section in self.config.sections():
 			cldav = self.__get_cal_dav(section)
 			if cldav == None:
 				continue
-			self.logger.info(f"Syncing - \"{section}\"")
 
+			# --------------------------- Get Aggregated Events -------------------------- #
 			for calendar in self.config[section]["calendars"].split(","):
+				self.logger.info(f"Loading Events - \"{section}\" - \"{calendar}\"")
 				cldav_calendar = cldav.create_calendar(calendar)
 				for event in cldav_calendar.get_events( 
 					datetime.now() - timedelta(weeks=weeks_back), 
@@ -86,12 +85,33 @@ class CalendarSync:
 				):
 					if not event.is_busy():
 						continue
-					for agg_calendar in aggregations:
-						agg_calendar.add_event(
-							event.get_start(),
-							event.get_end(),
-							"BUSY",
-							event.is_busy()
-						)
+					new_agg_events.append(event)
 
-			self.logger.info(f"Finished Syncing - \"{section}\"")
+			if len(self.config[section]["calendars"].split(",")) == 0:
+				self.logger.error(f"No Configured Calendars Found - \"{section}\"")
+			else:
+				self.logger.info(f"Finished Loading Events - \"{section}\"")
+
+		# ------------------------- Modify Aggregated Events ------------------------- #
+		for event in new_agg_events:
+			event.set_name(f"BUSY")
+
+		# --------------------------- Add Aggregated Events -------------------------- #
+		self.logger.info(f"Syncing Calendar(s)")
+		for agg_calendar in aggregations:
+			agg_events = agg_calendar.get_events(
+				datetime.now() - timedelta(weeks=weeks_back), 
+				datetime.now() + timedelta(weeks=weeks_forward)
+			)
+
+			for evt in [event for event in agg_events if event not in new_agg_events]:
+				agg_calendar.remove_events_in_range(evt.get_start(), evt.get_end())
+
+			for evt in [event for event in new_agg_events if event not in agg_events]:
+				agg_calendar.add_event(
+					evt.get_start(),
+					evt.get_end(),
+					evt.get_name(),
+					evt.is_busy()
+				)
+		self.logger.info(f"Finished Syncing Calendar(s)")
