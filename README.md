@@ -119,9 +119,12 @@ services:
 
 ---
 <table style="width: 100%; border: none;" cellspacing="0" cellpadding="0" border="0">
-	<tr>
-		<td>If you like this project you can buy me a coffee 😄 Would be greatly appreciated!</td>
-		<td><a href="https://www.buymeacoffee.com/pauldev" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+	<tr style="border: 0px;">
+		<td style="border: 0px;">
+			If you like this project you can buy me a coffee 😄 Would be greatly appreciated!
+		</td>
+		<td style="border: 0px;">
+			<a href="https://www.buymeacoffee.com/pauldev" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;"/>
 		</td>
 	</tr>
 </table>
