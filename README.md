@@ -3,15 +3,15 @@
 	<p align="center">
     	Tool to sync multiple calendars from different sources into one Free/Busy calendar 📆
 		<br/>
-		<a href="#-about-this-project">About This Project</a>
+		<a href="#question-about-this-project">About This Project</a>
 		·
-		<a href="#-features">Features</a>
+		<a href="#sparkles-features">Features</a>
 		·
-		<a href="#-setuprunning">Setup/Running</a>
+		<a href="#hammer_and_wrench-setuprunning">Setup/Running</a>
 		·
-		<a href="#-docker">Docker</a>
+		<a href="#whale-docker">Docker</a>
 		·
-		<a href="#-resources">Resources</a>
+		<a href="#books-resources">Resources</a>
   	</p>
 	<br/>
 </div>
