@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from typing import Union, List
 import configparser
 import logging
+import os
 
 # ---------------------------------------------------------------------------- #
 #                                 CalendarSync                                 #
@@ -46,6 +47,10 @@ class CalendarSync:
 		return None
 
 	def sync(self, weeks_back: int, weeks_forward: int) -> None:
+		if len(self.config.keys()) == 1:
+			self.logger.error("No Or Invalid Config Found")
+			return
+
 		aggregations = self.__get_aggregation_calendars()
 		if aggregations == None or len(aggregations) == 0:
 			return

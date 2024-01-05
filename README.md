@@ -51,6 +51,9 @@ Some optional arguments can also be passed as environment variables:
 > [!NOTE]
 > When adding calendars to the *calendars* list that don't exist, you will get a warning, but the sync will proceed.
 
+> [!NOTE]
+> If no or an invalid config is provided, a corresponding error occurs, but the sync will try to proceed.
+
 > [!CAUTION]
 > Calendar names in the *calendars* or *aggregate* list can't include ","
 
@@ -90,6 +93,9 @@ The easiest way to run the software is as a Docker container. There are 2 ways y
 
 > [!NOTE]
 > With these configurations, the config.ini needs to be placed inside the *settingsfolder*
+
+> [!IMPORTANT]
+> If no or an invalid config is provided, a corresponding error occurs, but the sync will try to proceed and the container won't fail.
 
 ## Command Line
 ```sh
