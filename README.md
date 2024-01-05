@@ -131,7 +131,7 @@ services:
 ---
 <div>
 	<div align="center">
-		If you like this project you can buy me a coffee 😄 Would be greatly appreciated!
+		If you like this project, you can buy me a coffee 😄 Would be greatly appreciated!
 	</div>
 	<br/>
 	<div align="center">
