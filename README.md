@@ -17,15 +17,15 @@
 </div>
 <br/>
 
-# ? About This Project
+# :question: About This Project
 I started this project since I had the problem that there wasn't a publicly available (free) software that synchronized multiple calendars into one Free/Busy calendar. So I set out on a mission to develop such a tool. This tool uses multiple CalDav servers as input and copies all the busy/opaque events to one or multiple other calendars. The software is made to run in a Docker container on a refresh interval.
 
-# ✨ Features
+# :sparkles: Features
 - [X] Syncing Multiple Calendars Into Free/Busy Calendars
 - [X] Exporting Multiple Free/Busy Calendars
 - [X] Syncing Automatically On An Interval
 
-# 🛠️ Setup/Running
+# :hammer_and_wrench: Setup/Running
 This section describes the basic setup and running of the software.
 
 ```
@@ -81,7 +81,7 @@ aggregate=Free/Busy,...			; The Calendars you want to aggregate to
 ```
 > ⚠️ When adding a calendar to the *aggregate* list, that doesn't exist, an error occurs and the sync **will fail!**
 
-# 🐳 Docker
+# :whale: Docker
 The easiest way to run the software is as a Docker container. There are 2 ways you can achieve this.
 
 > ⚠️ With these configurations, the config.ini needs to be placed inside the *settingsfolder*
@@ -113,7 +113,7 @@ services:
       - /path/to/settingsfolder:/app/settings
 ```
 
-# 📚 Resources
+# :books: Resources
 - [Connection to Google Calendar](https://blog.lasall.dev/post/tell-me-why-google-and-caldav)
 - [CalDav Library](https://github.com/python-caldav/caldav/tree/master)
 
