@@ -25,6 +25,15 @@ class BaseObjectResource(caldav.CalendarObjectResource):
 		"""
 		return self.instance.vevent.summary.value
 	
+	def set_name(self, name: str) -> None:
+		"""
+		The function `set_name` sets the value of the `summary` attribute of the event.
+		:param name: The `name` parameter is a string that represents the name of the
+		event.
+		:type name: str
+		"""
+		self.instance.vevent.summary.value = name
+	
 	def get_start(self) -> datetime:
 		"""
 		The function returns the start datetime of an event.
@@ -43,6 +52,9 @@ class BaseObjectResource(caldav.CalendarObjectResource):
 	
 	def __str__(self) -> str:
 		return f"{self.get_name()} ({self.is_busy()}) - [{self.get_start()} - {self.get_end()}]"
+
+	def __eq__(self, other):
+		return self.get_name() == other.get_name() and self.get_start() == other.get_start() and self.get_end() == other.get_end()
 
 # ---------------------------------------------------------------------------- #
 #                                 BaseCalendar                                 #
@@ -108,6 +120,20 @@ class BaseCalendar:
 			dtend=dtend,
 			transp="OPAQUE" if busy else "TRANSPARENT"
 		)
+	
+	def remove_events_in_range(self, start: datetime, end: datetime) -> None:
+		"""
+		The function removes all events within a specified time range.
+		
+		:param start: The start parameter is a datetime object that represents the
+		start date and time of the range for which you want to remove events
+		:type start: datetime
+		:param end: The "end" parameter is a datetime object that represents the end
+		time or date of the range for which you want to remove events
+		:type end: datetime
+		"""
+		for event in self.calendar.search(start=start, end=end, event=True):
+			event.delete()
 
 # ---------------------------------------------------------------------------- #
 #                                  BaseCalDav                                  #
