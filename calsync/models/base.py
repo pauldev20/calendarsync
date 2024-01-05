@@ -1,5 +1,5 @@
-from typing import List, Literal
 from datetime import datetime
+from typing import List
 import caldav
 
 # ---------------------------------------------------------------------------- #
@@ -10,17 +10,35 @@ class BaseObjectResource(caldav.CalendarObjectResource):
 		self.__dict__.update(event.__dict__)
 
 	def is_busy(self) -> bool:
+		"""
+		The function checks if the event is busy or not.
+		:return: a boolean value, True if the event is busy else False.
+		"""
 		if hasattr(self.instance.vevent, "transp") == False:
 			return True
 		return self.instance.vevent.transp.value == "OPAQUE"
 	
 	def get_name(self) -> str:
+		"""
+		The function `get_name` returns the value of the `summary` attribute of the event.
+		:return: a string value, which is the summary value of the vevent instance.
+		"""
 		return self.instance.vevent.summary.value
 	
 	def get_start(self) -> datetime:
+		"""
+		The function returns the start datetime of an event.
+		:return: The method is returning the value of the `dtstart` attribute of the
+		event.
+		"""
 		return self.instance.vevent.dtstart.value
 
 	def get_end(self) -> datetime:
+		"""
+		The function returns the end datetime of an event.
+		:return: The method is returning the value of the `dtend` attribute of the
+		event.
+		"""
 		return self.instance.vevent.dtend.value
 	
 	def __str__(self) -> str:
@@ -40,20 +58,55 @@ class BaseCalendar:
 		return [evt for splitevent in events_ for evt in splitevent.split_expanded()]
 	
 	def get_events(self, start: datetime, end: datetime) -> List[BaseObjectResource]:
+		"""
+		The function `get_events` returns a list of `BaseObjectResource` objects by
+		searching for events within a specified time range.
+		
+		:param start: The start parameter is a datetime object that represents the
+		start date and time of the range for which you want to retrieve events
+		:type start: datetime
+		:param end: The "end" parameter is a datetime object that represents the end
+		time or date of the range for which you want to retrieve events
+		:type end: datetime
+		:return: a list of BaseObjectResource objects.
+		"""
 		return [
 			BaseObjectResource(event) for event in self.__expandLocal(self.calendar.search(start=start, end=end, event=True), start, end)
 		]
 	
 	def clear(self) -> None:
+		"""
+		The function clears all events from a calendar.
+		"""
 		for event in self.calendar.search(event=True):
 			event.delete()
 	
-	def add_event(self, dtstart: datetime, dtend: datetime, summary: str, transp: Literal["OPAQUE", "TRANSPARENT"] = "OPAQUE") -> caldav.CalendarObjectResource:
+	def add_event(self, dtstart: datetime, dtend: datetime, summary: str, busy: bool = True) -> caldav.CalendarObjectResource:
+		"""
+		The function adds an event to a calendar with the specified start and end
+		times, summary, and busy status.
+		
+		:param dtstart: The dtstart parameter represents the start date and time of the
+		event. It should be a datetime object that specifies the year, month, day,
+		hour, minute, and second of the event's start time
+		:type dtstart: datetime
+		:param dtend: The `dtend` parameter represents the end date and time of the
+		event.
+		:type dtend: datetime
+		:param summary: The summary parameter is a string that represents the title or
+		description of the event. It is typically a brief and concise summary of what
+		the event is about
+		:type summary: str
+		:param busy: The "busy" parameter is a boolean value that indicates whether the
+		event is marked as busy or not.
+		:type busy: bool (optional)
+		:return: a `caldav.CalendarObjectResource` object.
+		"""
 		return self.calendar.save_event(
 			summary=summary,
 			dtstart=dtstart,
 			dtend=dtend,
-			transp=transp
+			transp="OPAQUE" if busy else "TRANSPARENT"
 		)
 
 # ---------------------------------------------------------------------------- #
@@ -67,17 +120,35 @@ class BaseCalDav:
 		self.connect()
 
 	def connect(self):
+		"""
+		The function checks if the client is None and raises an error if it is,
+		otherwise it calls the principal method of the client.
+		"""
 		if self.client == None:
 			raise NotImplementedError("This method is not implemented, please use a subclass")
 		else:
 			self.client.principal()
 
 	def get_calendar_names(self) -> List[str]:
+		"""
+		The function returns a list of calendar names by connecting to a client and
+		accessing the calendars.
+		:return: A list of calendar names.
+		"""
 		if self.client == None:
 			self.connect()
 		return [cal.name for cal in self.client.principal().calendars()]
 
 	def create_calendar(self, calendar_name: str) -> BaseCalendar:
+		"""
+		The function creates a calendar with the given name if it doesn't already
+		exist, and returns a BaseCalendar object.
+		
+		:param calendar_name: The parameter `calendar_name` is a string that represents
+		the name of the calendar that you want to create
+		:type calendar_name: str
+		:return: an instance of the BaseCalendar class.
+		"""
 		if self.client == None:
 			self.connect()
 		if calendar_name in self.get_calendar_names():

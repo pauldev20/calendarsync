@@ -47,6 +47,20 @@ class CalendarSync:
 		return None
 
 	def sync(self, weeks_back: int, weeks_forward: int) -> None:
+		"""
+		The `sync` function synchronizes calendars by retrieving events from specified
+		calendars and adding them to aggregation calendars within a specified time
+		range.
+		
+		:param weeks_back: The `weeks_back` parameter specifies the number of weeks in
+		the past from the current date that should be included in the synchronization
+		process. It determines the starting point for retrieving events from the
+		calendars
+		:type weeks_back: int
+		:param weeks_forward: The parameter `weeks_forward` represents the number of
+		weeks in the future from the current date that events will be synced
+		:type weeks_forward: int
+		"""
 		if len(self.config.keys()) == 1:
 			self.logger.error("No Or Invalid Config Found")
 			return
@@ -77,7 +91,7 @@ class CalendarSync:
 							event.get_start(),
 							event.get_end(),
 							"BUSY",
-							"OPAQUE" if event.is_busy() else "TRANSPARENT"
+							event.is_busy()
 						)
 
 			self.logger.info(f"Finished Syncing - \"{section}\"")
