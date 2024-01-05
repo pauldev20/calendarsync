@@ -61,13 +61,13 @@ Some optional arguments can also be passed as environment variables:
 
 ```ini
 [iCloud]
-username=your@email.com			; Your iCloud Login E-Mail Address
-password=xxxx xxxx xxxx xxxx	; The App-Specific Password you just created
-calendars=Work,Private,...		; The Calendars you want to sync
-aggregate=Free/Busy,...			; The Calendars you want to aggregate to
+username=your@email.com         (Your iCloud Login E-Mail Address)
+password=xxxx xxxx xxxx xxxx    (The App-Specific Password you just created)
+calendars=Work,Private,...      (The Calendars you want to sync)
+aggregate=Free/Busy,...         (The Calendars you want to aggregate to)
 ```
 > [!IMPORTANT]
-> When adding a clalendar to the *aggregate* list, that doesn't exist, it will be created.
+> When adding a calendar to the *aggregate* list, that doesn't exist, it will be created.
 
 ## Google
 1. Go to [myaccount.google.com](https://myaccount.google.com)
@@ -77,10 +77,10 @@ aggregate=Free/Busy,...			; The Calendars you want to aggregate to
 
 ```ini
 [Google]
-username=gmail@email.com		; Your Google Login E-Mail Address
-password=xxxx-xxxx-xxxx-xxxx	; The App-Password you just created
-calendars=Work,Private,...		; The Calendars you want to sync
-aggregate=Free/Busy,...			; The Calendars you want to aggregate to
+username=gmail@email.com        (Your Google Login E-Mail Address)
+password=xxxx-xxxx-xxxx-xxxx    (The App-Password you just created)
+calendars=Work,Private,...      (The Calendars you want to sync)
+aggregate=Free/Busy,...         (The Calendars you want to aggregate to)
 ```
 > [!IMPORTANT]
 > When adding a calendar to the *aggregate* list, that doesn't exist, an error occurs and the sync **will fail!**
