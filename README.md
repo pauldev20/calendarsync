@@ -88,13 +88,13 @@ The easiest way to run the software is as a Docker container. There are 2 ways y
 
 ## Command Line
 ```sh
-docker pull pauldev20/calendarsync:latest
+docker build --tag calendarsync
 
 # With Default Synchronization Values
-docker run --name yourcontainername -d pauldev20/calendarsync:latest -v /path/to/settingsfolder:/app/settings
+docker run --name yourcontainername -v /path/to/settingsfolder:/app/settings calendarsync
 
 # With Custom Synchronization Values
-docker run --name yourcontainername -d pauldev20/calendarsync:latest -v /path/to/settingsfolder:/app/settings -e CALENDARSYNC_WEEKS_FORWARD=2 -e CALENDARSYNC_WEEKS_BACK=2 -e CALENDARSYNC_INTERVAL=15
+docker run --name yourcontainername -v /path/to/settingsfolder:/app/settings -e CALENDARSYNC_WEEKS_FORWARD=2 -e CALENDARSYNC_WEEKS_BACK=2 -e CALENDARSYNC_INTERVAL=15 calendarsync
 ```
 
 ## Docker Compose
