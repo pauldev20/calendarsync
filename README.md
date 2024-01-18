@@ -24,6 +24,7 @@ I started this project since I had the problem that there wasn't a publicly avai
 - [X] Syncing Multiple Calendars Into Free/Busy Calendars
 - [X] Exporting Multiple Free/Busy Calendars
 - [X] Syncing Automatically On An Interval
+- [X] Adding Travel-Time To The Event
 
 # :hammer_and_wrench: Setup/Running
 This section describes the basic setup and running of the software.
@@ -68,6 +69,7 @@ username=your@email.com         (Your iCloud Login E-Mail Address)
 password=xxxx xxxx xxxx xxxx    (The App-Specific Password you just created)
 calendars=Work,Private,...      (The Calendars you want to sync)
 aggregate=Free/Busy,...         (The Calendars you want to aggregate to)
+travel=True						(If Travel-Time should be included in the aggregated events)
 ```
 > [!IMPORTANT]
 > When adding a calendar to the *aggregate* list, that doesn't exist, it will be created.
