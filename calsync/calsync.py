@@ -78,7 +78,9 @@ class CalendarSync:
 			# --------------------------- Get Aggregated Events -------------------------- #
 			for calendar in self.config[section]["calendars"].split(","):
 				self.logger.info(f"Loading Events - \"{section}\" - \"{calendar}\"")
-				cldav_calendar = cldav.create_calendar(calendar)
+				cldav_calendar = cldav.create_calendar(calendar,
+					bool(self.config[section].get("travel", False))
+				)
 				for event in cldav_calendar.get_events( 
 					datetime.now() - timedelta(weeks=weeks_back), 
 					datetime.now() + timedelta(weeks=weeks_forward)

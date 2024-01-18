@@ -1,13 +1,15 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
+import isodate
 import caldav
 
 # ---------------------------------------------------------------------------- #
 #                              BaseObjectResource                              #
 # ---------------------------------------------------------------------------- #
 class BaseObjectResource(caldav.CalendarObjectResource):
-	def __init__(self, event: caldav.CalendarObjectResource) -> None:
+	def __init__(self, event: caldav.CalendarObjectResource, addTravelTimes: bool = False) -> None:
 		self.__dict__.update(event.__dict__)
+		self.__addTravelTimes = addTravelTimes
 
 	def is_busy(self) -> bool:
 		"""
@@ -40,6 +42,8 @@ class BaseObjectResource(caldav.CalendarObjectResource):
 		:return: The method is returning the value of the `dtstart` attribute of the
 		event.
 		"""
+		if self.__addTravelTimes:
+			return self.instance.vevent.dtstart.value - self.get_travel_time()
 		return self.instance.vevent.dtstart.value
 
 	def get_end(self) -> datetime:
@@ -50,6 +54,15 @@ class BaseObjectResource(caldav.CalendarObjectResource):
 		"""
 		return self.instance.vevent.dtend.value
 	
+	def get_travel_time(self) -> timedelta:
+		"""
+		The function returns the travel time of an event.
+		:return: The method is returning the travel time of the event.
+		"""
+		if hasattr(self.instance.vevent, "x_apple_travel_duration") == False:
+			return timedelta(days=0, seconds=0)
+		return isodate.parse_duration(self.instance.vevent.x_apple_travel_duration.value)
+
 	def __str__(self) -> str:
 		return f"{self.get_name()} ({self.is_busy()}) - [{self.get_start()} - {self.get_end()}]"
 
@@ -60,7 +73,8 @@ class BaseObjectResource(caldav.CalendarObjectResource):
 #                                 BaseCalendar                                 #
 # ---------------------------------------------------------------------------- #
 class BaseCalendar:
-	def __init__(self, calendar: caldav.Calendar) -> None:
+	def __init__(self, calendar: caldav.Calendar, addTravelTimes: bool = False) -> None:
+		self.addTravelTimes = addTravelTimes
 		self.calendar = calendar
 
 	def __expandLocal(self, events: List[caldav.CalendarObjectResource], start: datetime, end: datetime) -> List[caldav.CalendarObjectResource]:
@@ -83,7 +97,9 @@ class BaseCalendar:
 		:return: a list of BaseObjectResource objects.
 		"""
 		return [
-			BaseObjectResource(event) for event in self.__expandLocal(self.calendar.search(start=start, end=end, event=True), start, end)
+			BaseObjectResource(event, self.addTravelTimes) for event in self.__expandLocal(
+				self.calendar.search(start=start, end=end, event=True), start, end
+			)
 		]
 	
 	def clear(self) -> None:
@@ -165,7 +181,7 @@ class BaseCalDav:
 			self.connect()
 		return [cal.name for cal in self.client.principal().calendars()]
 
-	def create_calendar(self, calendar_name: str) -> BaseCalendar:
+	def create_calendar(self, calendar_name: str, add_travel_times: bool = False) -> BaseCalendar:
 		"""
 		The function creates a calendar with the given name if it doesn't already
 		exist, and returns a BaseCalendar object.
@@ -178,5 +194,5 @@ class BaseCalDav:
 		if self.client == None:
 			self.connect()
 		if calendar_name in self.get_calendar_names():
-			return BaseCalendar(self.client.principal().calendar(name=calendar_name))
-		return BaseCalendar(self.client.principal().make_calendar(calendar_name))
+			return BaseCalendar(self.client.principal().calendar(name=calendar_name), add_travel_times)
+		return BaseCalendar(self.client.principal().make_calendar(calendar_name), add_travel_times)
