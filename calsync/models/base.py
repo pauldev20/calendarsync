@@ -7,9 +7,9 @@ import caldav
 #                              BaseObjectResource                              #
 # ---------------------------------------------------------------------------- #
 class BaseObjectResource(caldav.CalendarObjectResource):
-	def __init__(self, event: caldav.CalendarObjectResource, addTravelTimes: bool = False) -> None:
+	def __init__(self, event: caldav.CalendarObjectResource, add_travel_times: bool = False) -> None:
+		self.__addTravelTimes = add_travel_times
 		self.__dict__.update(event.__dict__)
-		self.__addTravelTimes = addTravelTimes
 
 	def is_busy(self) -> bool:
 		"""
@@ -38,9 +38,9 @@ class BaseObjectResource(caldav.CalendarObjectResource):
 	
 	def get_start(self) -> datetime:
 		"""
-		The function returns the start datetime of an event.
-		:return: The method is returning the value of the `dtstart` attribute of the
-		event.
+		The function returns the start datetime of an event, taking into account travel
+		times if specified.
+		:return: the start datetime of an event.
 		"""
 		if self.__addTravelTimes:
 			return self.instance.vevent.dtstart.value - self.get_travel_time()
@@ -73,8 +73,9 @@ class BaseObjectResource(caldav.CalendarObjectResource):
 #                                 BaseCalendar                                 #
 # ---------------------------------------------------------------------------- #
 class BaseCalendar:
-	def __init__(self, calendar: caldav.Calendar, addTravelTimes: bool = False) -> None:
-		self.addTravelTimes = addTravelTimes
+	def __init__(self, calendar: caldav.Calendar, add_travel_times: bool = False, invisible_summary: bool = False) -> None:
+		self.invisibleSummary = invisible_summary
+		self.addTravelTimes = add_travel_times
 		self.calendar = calendar
 
 	def __expandLocal(self, events: List[caldav.CalendarObjectResource], start: datetime, end: datetime) -> List[caldav.CalendarObjectResource]:
@@ -131,7 +132,7 @@ class BaseCalendar:
 		:return: a `caldav.CalendarObjectResource` object.
 		"""
 		return self.calendar.save_event(
-			summary=summary,
+			summary="BUSY" if self.invisibleSummary else summary,
 			dtstart=dtstart,
 			dtend=dtend,
 			transp="OPAQUE" if busy else "TRANSPARENT"
@@ -181,18 +182,28 @@ class BaseCalDav:
 			self.connect()
 		return [cal.name for cal in self.client.principal().calendars()]
 
-	def create_calendar(self, calendar_name: str, add_travel_times: bool = False) -> BaseCalendar:
+	def create_calendar(self, calendar_name: str, add_travel_times: bool = False, invisible_summary: bool = False) -> BaseCalendar:
 		"""
 		The function creates a calendar with the given name if it doesn't already
 		exist, and returns a BaseCalendar object.
 		
-		:param calendar_name: The parameter `calendar_name` is a string that represents
+		:param calendar_name: The `calendar_name` parameter is a string that represents
 		the name of the calendar that you want to create
 		:type calendar_name: str
+		:param add_travel_times: The `add_travel_times` parameter is a boolean flag
+		that determines whether or not to include travel times in the calendar. If set
+		to `True`, the calendar will include travel times. If set to `False` (default),
+		travel times will not be included, defaults to False
+		:type add_travel_times: bool (optional)
+		:param invisible_summary: The `invisible_summary` parameter is a boolean flag
+		that determines whether the summary of the calendar should be visible or not.
+		If set to `True`, the summary will be invisible, and if set to `False`
+		(default), the summary will be visible, defaults to False
+		:type invisible_summary: bool (optional)
 		:return: an instance of the BaseCalendar class.
 		"""
 		if self.client == None:
 			self.connect()
 		if calendar_name in self.get_calendar_names():
-			return BaseCalendar(self.client.principal().calendar(name=calendar_name), add_travel_times)
-		return BaseCalendar(self.client.principal().make_calendar(calendar_name), add_travel_times)
+			return BaseCalendar(self.client.principal().calendar(name=calendar_name), add_travel_times, invisible_summary)
+		return BaseCalendar(self.client.principal().make_calendar(calendar_name), add_travel_times, invisible_summary)
