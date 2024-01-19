@@ -25,6 +25,7 @@ I started this project since I had the problem that there wasn't a publicly avai
 - [X] Exporting Multiple Free/Busy Calendars
 - [X] Syncing Automatically On An Interval
 - [X] Adding Travel-Time To The Event
+- [X] Exporting Multiple Free/Busy Calendars With Visible Events
 
 # :hammer_and_wrench: Setup/Running
 This section describes the basic setup and running of the software.
@@ -56,7 +57,7 @@ Some optional arguments can also be passed as environment variables:
 > If no or an invalid config is provided, a corresponding error occurs, but the sync will try to proceed.
 
 > [!CAUTION]
-> Calendar names in the *calendars* or *aggregate* list can't include ","
+> Calendar names in the *calendars*, *aggregate* or *visible* list can't include ","
 
 ## iCloud
 1. Go to [appleid.apple.com](https://appleid.apple.com/account/home)
@@ -69,10 +70,11 @@ username=your@email.com         (Your iCloud Login E-Mail Address)
 password=xxxx xxxx xxxx xxxx    (The App-Specific Password you just created)
 calendars=Work,Private,...      (The Calendars you want to sync)
 aggregate=Free/Busy,...         (The Calendars you want to aggregate to)
+visible=Aggregated,...          (The Calendars you want to aggregate all events to as visible)
 travel=True						(If Travel-Time should be included in the aggregated events)
 ```
 > [!IMPORTANT]
-> When adding a calendar to the *aggregate* list, that doesn't exist, it will be created.
+> When adding a calendar to the *aggregate* or *visible* list, that doesn't exist, it will be created.
 
 ## Google
 1. Go to [myaccount.google.com](https://myaccount.google.com)
@@ -86,9 +88,10 @@ username=gmail@email.com        (Your Google Login E-Mail Address)
 password=xxxx-xxxx-xxxx-xxxx    (The App-Password you just created)
 calendars=Work,Private,...      (The Calendars you want to sync)
 aggregate=Free/Busy,...         (The Calendars you want to aggregate to)
+visible=Aggregated,...          (The Calendars you want to aggregate all events to as visible)
 ```
 > [!IMPORTANT]
-> When adding a calendar to the *aggregate* list, that doesn't exist, an error occurs and the sync **will fail!**
+> When adding a calendar to the *aggregate* or *visible* list, that doesn't exist, an error occurs and the sync **will fail!**
 
 # :whale: Docker
 The easiest way to run the software is as a Docker container. There are 2 ways you can achieve this.
