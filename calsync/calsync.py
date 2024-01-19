@@ -36,15 +36,25 @@ class CalendarSync:
 			self.logger.error("Error while connecting to CalDAV server")
 		return None
 	
+	def __get_aggregates_list(self, section: str, key: str) -> List[str]:
+		return self.config[section][key].split(",") if key in self.config[section] else []
+	
 	def __get_aggregation_calendars(self) -> Union[List[BaseCalendar], None]:
-		aggregates = [(self.config[section]["aggregate"], section) for section in self.config.sections() if "aggregate" in self.config[section]]
-		aggregates = [(aggr, aggregate[1]) for aggregate in aggregates for aggr in aggregate[0].split(",")]
-		if len(aggregates) > 0:
-			calendars = [(self.__get_cal_dav(aggregate[1]), aggregate[0]) for aggregate in aggregates]
-			return [cal[0].create_calendar(cal[1]) for cal in calendars if cal[0] != None]
-		else:
+		aggregates = []
+		for section in self.config.sections():
+			aggregate = self.__get_aggregates_list(section, "aggregate")
+			visible = self.__get_aggregates_list(section, "visible")
+			if len(aggregate) > 0 or len(visible) > 0:
+				caldav = self.__get_cal_dav(section)
+				aggregates.extend([
+					caldav.create_calendar(cal) for cal in aggregate
+				] + [
+					caldav.create_calendar(cal, invisible_summary=False) for cal in visible
+				])
+		if len(aggregates) == 0:
 			self.logger.error("Could not find aggregation calendar(s)")
-		return None
+			return None
+		return aggregates
 
 	def sync(self, weeks_back: int, weeks_forward: int) -> None:
 		"""
@@ -93,10 +103,6 @@ class CalendarSync:
 				self.logger.error(f"No Configured Calendars Found - \"{section}\"")
 			else:
 				self.logger.info(f"Finished Loading Events - \"{section}\"")
-
-		# ------------------------- Modify Aggregated Events ------------------------- #
-		for event in new_agg_events:
-			event.set_name(f"BUSY")
 
 		# --------------------------- Add Aggregated Events -------------------------- #
 		self.logger.info(f"Syncing Calendar(s)")
